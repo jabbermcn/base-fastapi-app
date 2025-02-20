@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "base-fastapi-app"
+version = "0.1.0"
+description = "Base FastAPI application include administraion panel"
+authors = ["n.mikhailovskii <n.mikhailovskii@atomgroup.io>"]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.9.6"
+pre-commit = "^4.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
