@@ -32,3 +32,6 @@ class User(Base, LifecycleMixin, SoftDeleteMixin):
         insert_default=uuid4,
         primary_key=True,
     )
+
+    def __str__(self) -> str:
+        return self.id

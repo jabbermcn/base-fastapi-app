@@ -126,7 +126,7 @@
               {% if model_view.can_delete %}
               <a href="#" data-name="{{ model_view.name }}" data-pk="{{ get_object_identifier(row) }}"
                 data-url="{{ model_view._url_for_delete(request, row) }}" data-bs-toggle="modal"
-                data-bs-target="#modal-delete" title="Удалить">
+                data-bs-target="#modal-delete" class="btn btn-icon btn-outline-danger">
                 <i class="ti ti-trash"></i>
               </a>
               {% endif %}
