@@ -1,0 +1,48 @@
+{% extends "sqladmin/layout.html" %}
+{% from 'sqladmin/_macros.html' import render_form_fields %}
+{% block content %}
+<div class="col-12">
+  <div class="card">
+    <div class="card-header">
+      <h3>Редактирование: {{ obj }}</h3>
+    </div>
+    <div class="card-body border-bottom py-3">
+      <form action="{{ model_view._build_url_for('admin:edit', request, obj) }}" method="POST"
+        enctype="multipart/form-data" id="edit-form">
+        <div class="row">
+          {% if error %}
+          <div class="alert alert-danger" role="alert">{{ error }}</div>
+          {% endif %}
+        </div>
+        <fieldset class="form-fieldset">
+          {{ render_form_fields(form, form_opts=form_opts) }}
+        </fieldset>
+        <div class="row">
+          <div class="col-md-10">
+            <a href="{{ url_for('admin:list', identity=model_view.identity) }}" class="btn btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Back">
+              <i class="ti ti-arrow-left"></i>
+            </a>
+            {% if model_view.can_create %}
+            <a class="btn btn-icon btn-outline-success" href="#" id="save-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Save">
+              <i class="ti ti-device-floppy"></i>
+            </a>
+            <input name="save" hidden="hidden">
+            {% endif %}
+
+            {% if model_view.save_as %}
+            <a class="btn btn-icon btn-outline-yellow" href="#" id="save-as-new-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Save as NEW">
+              <i class="ti ti-plus"></i>
+            </a>
+            {% endif %}
+
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block tail %}
+<script type="text/javascript" src="{{ url_for('statics', path='js/edit.js') }}"></script>
+{% endblock %}

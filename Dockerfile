@@ -1,4 +1,6 @@
-FROM python:3.12.7-slim
+ARG PROXY_REGISTRY
+
+FROM $PROXY_REGISTRY/python:3.12.7-slim
 
 WORKDIR /app
 
@@ -21,4 +23,4 @@ RUN poetry install
 
 COPY . /app
 
-CMD ["sh", "-c", "python -m server"]
+CMD ["sh", "-c", "alembic upgrade head && python -m server"]

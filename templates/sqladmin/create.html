@@ -1,0 +1,41 @@
+{% extends "sqladmin/layout.html" %}
+{% from 'sqladmin/_macros.html' import render_form_fields %}
+{% block content %}
+<div class="col-12">
+  <div class="card">
+    <div class="card-header">
+      <h3>Создание: {{ model_view.name }}</h3>
+    </div>
+    <div class="card-body border-bottom py-3">
+      <form action="{{ url_for('admin:create', identity=model_view.identity) }}" method="POST" enctype="multipart/form-data" id="create-form">
+        <div class="row">
+          {% if error %}
+          <div class="alert alert-danger" role="alert">{{ error }}</div>
+          {% endif %}
+        </div>
+        <fieldset class="form-fieldset">
+          {{ render_form_fields(form, form_opts=form_opts) }}
+        </fieldset>
+        <div class="row">
+          <div class="col-md-10">
+            <a href="{{ url_for('admin:list', identity=model_view.identity) }}" class="btn btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Назад">
+              <i class="ti ti-arrow-left"></i>
+            </a>
+            <a class="btn btn-icon btn-outline-success" href="#" id="save-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Сохранить">
+              <i class="ti ti-device-floppy"></i>
+            </a>
+            <a class="btn btn-icon btn-outline-yellow" href="#" id="save-and-add-another-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Сохранить и добавить еще">
+              <i class="ti ti-plus"></i>
+            </a>
+            <input name="save" hidden="hidden">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block tail %}
+<script type="text/javascript" src="{{ url_for('statics', path='js/create.js') }}"></script>
+{% endblock %}

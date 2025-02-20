@@ -1,0 +1,11 @@
+<div class="input-icon">
+  <div class="input-group">
+    <input id="search-input" type="text" class="form-control" placeholder="Поиск…" value="{{ request.query_params.get('search', '') }}">
+    <a class="btn btn-icon" id="search-button">
+      <i class="ti ti-search"></i>
+    </a>
+    <button id="search-reset" class="btn btn-icon" type="button" {% if not request.query_params.get('search') %}disabled{% endif %}>
+      <i class="ti ti-x"></i>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+services:
+  postgres-master:
+    image: bitnami/postgresql:latest
+    environment:
+      POSTGRESQL_USERNAME: admin
+      POSTGRESQL_PASSWORD: admin
+      POSTGRESQL_DATABASE: admin
+    volumes:
+      - ./data:/var/lib/postgresql/data
+
+  pgbouncer-master:
+    image: bitnami/pgbouncer:latest
+    environment:
+      PGBOUNCER_DATABASE: admin
+      PGBOUNCER_POOL_MODE: transaction
+      PGBOUNCER_MAX_CLIENT_CONN: 10000
+      PGBOUNCER_DEFAULT_POOL_SIZE: 1000
+      PGBOUNCER_RESERVE_POOL_TIMEOUT: 5
+      PGBOUNCER_SERVER_IDLE_TIMEOUT: 30
+      PGBOUNCER_RESERVE_POOL_SIZE: 200
+      POSTGRESQL_USERNAME: admin
+      POSTGRESQL_PASSWORD: admin
+      POSTGRESQL_DATABASE: admin
+      POSTGRESQL_HOST: postgres-master
+    ports:
+      - 6432:6432
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PROXY_REGISTRY: docker.io
+    image: fastapi-admin
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+    depends_on:
+      - postgres-master
+      - pgbouncer-master
