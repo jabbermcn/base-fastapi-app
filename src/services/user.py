@@ -29,15 +29,22 @@ class UserService:
         except IntegrityError:
             raise ObjectAlreadyExistError(name="user")
 
-    async def update(self, user_id: UUID, user: User) -> User:
-        return await self.repo.update(_id=user_id, obj=user)
+    async def update(self, user_id: UUID, data: dict) -> User:
+        user = await self.repo.update(_id=user_id, obj=data)
+        if not user:
+            raise ObjectNotFoundError(name="user")
+        return user
 
     async def delete(self, user_id: UUID) -> None:
-        if await self.repo.delete(_id=user_id):
+        if not await self.repo.delete(_id=user_id):
             raise ObjectNotFoundError(name="user")
 
     async def get_list(
-        self, options: list[Any] | None = None, filters: list[Any] | None = None, page: int = 1, page_size: int = 25
+        self,
+        page: int,
+        page_size: int,
+        options: list[Any] | None = None,
+        filters: list[Any] | None = None,
     ) -> Sequence[User | Any]:
         return await self.repo.get_list(page=page, page_size=page_size, options=options, filters=filters)
 

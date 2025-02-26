@@ -32,20 +32,26 @@ class BaseRepo(ABC, Generic[ModelType]):
 
         return await self._session.scalar(statement=statement)
 
-    async def update(self, _id: Any, obj: ModelType) -> ModelType:
+    async def update(self, _id: Any, obj: dict) -> ModelType:
         result = await self._session.execute(
-            statement=update(self._model).filter(and_(self._model.id == _id)).values(**vars(obj)).returning(self._model)
+            statement=update(self._model).filter(and_(self._model.id == _id)).values(**obj).returning(self._model)
         )
         await self._session.commit()
-        return result.scalar_one()
+        return result.scalar_one_or_none()
 
-    async def delete(self, _id: Any) -> bool:
-        result = await self._session.execute(statement=delete(self._model).filter(and_(self._model.id == _id)))
+    async def delete(self, _id: Any) -> ModelType:
+        result = await self._session.execute(
+            statement=delete(self._model).filter(and_(self._model.id == _id)).returning(self._model)
+        )
         await self._session.commit()
-        return result.rowcount == 0
+        return result.scalar_one_or_none()
 
     async def get_list(
-        self, options: list[Any] | None = None, filters: list[Any] | None = None, page: int = 1, page_size: int = 25
+        self,
+        page: int,
+        page_size: int,
+        options: list[Any] | None = None,
+        filters: list[Any] | None = None,
     ) -> Sequence[Any | ModelType]:
         statement = select(self._model)
         if options:
