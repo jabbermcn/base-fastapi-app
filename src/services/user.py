@@ -2,10 +2,11 @@ from collections.abc import Sequence
 from typing import Any
 from uuid import UUID
 
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.models import User
-from src.exceptions import ObjectNotFoundError
+from src.exceptions import ObjectAlreadyExistError, ObjectNotFoundError
 from src.repos import UserRepo
 
 
@@ -23,13 +24,17 @@ class UserService:
         return user
 
     async def create(self, user: User) -> User:
-        return await self.repo.create(obj=user)
+        try:
+            return await self.repo.create(obj=user)
+        except IntegrityError:
+            raise ObjectAlreadyExistError(name="user")
 
     async def update(self, user_id: UUID, user: User) -> User:
         return await self.repo.update(_id=user_id, obj=user)
 
     async def delete(self, user_id: UUID) -> None:
-        await self.repo.delete(_id=user_id)
+        if await self.repo.delete(_id=user_id):
+            raise ObjectNotFoundError(name="user")
 
     async def get_list(
         self, options: list[Any] | None = None, filters: list[Any] | None = None, page: int = 1, page_size: int = 25

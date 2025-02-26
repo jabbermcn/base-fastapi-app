@@ -39,9 +39,10 @@ class BaseRepo(ABC, Generic[ModelType]):
         await self._session.commit()
         return result.scalar_one()
 
-    async def delete(self, _id: Any) -> None:
-        await self._session.execute(statement=delete(self._model).filter(and_(self._model.id == _id)))
+    async def delete(self, _id: Any) -> bool:
+        result = await self._session.execute(statement=delete(self._model).filter(and_(self._model.id == _id)))
         await self._session.commit()
+        return result.rowcount == 0
 
     async def get_list(
         self, options: list[Any] | None = None, filters: list[Any] | None = None, page: int = 1, page_size: int = 25

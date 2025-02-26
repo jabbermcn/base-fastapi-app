@@ -6,11 +6,11 @@ from api.dependecies.database_session import DBSession
 from api.services import RESTUserService
 
 
-__all__ = ["UserService"]
+__all__ = ["UserServiceDI"]
 
 
 async def _get_user_service(session: DBSession) -> RESTUserService:
     return RESTUserService(session=session)
 
 
-UserService = Annotated[RESTUserService, Depends(dependency=_get_user_service)]
+UserServiceDI = Annotated[RESTUserService, Depends(dependency=_get_user_service)]
