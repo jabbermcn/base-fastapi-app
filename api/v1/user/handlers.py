@@ -10,9 +10,9 @@ from starlette.status import (
 )
 
 from api.annotated_types import PageQuery, PageSizeQuery, UserID
-from api.dependecies import UserServiceDI
+from api.dependencies import UserServiceDepends
 from src.types import UserCreateDTO, UserDTO, UserUpdateDTO
-from src.types.exceptions import HTTPExceptionModel, UserAlreadyExistErrorDTO, UserNotFoundErrorDTO
+from src.types.exceptions import HTTPExceptionErrorDTO, ObjectAlreadyExistErrorDTO, ObjectNotFoundErrorDTO
 from src.types.pagination import Paginator
 
 
@@ -25,12 +25,12 @@ router = APIRouter()
     response_model=UserDTO,
     summary="Get User",
     responses={
-        HTTP_404_NOT_FOUND: {"model": UserNotFoundErrorDTO},
-        HTTP_500_INTERNAL_SERVER_ERROR: {"model": HTTPExceptionModel},
+        HTTP_404_NOT_FOUND: {"model": ObjectNotFoundErrorDTO(name="user")},
+        HTTP_500_INTERNAL_SERVER_ERROR: {"model": HTTPExceptionErrorDTO},
     },
     name="user_get",
 )
-async def user_get(pk: UserID, service: UserServiceDI) -> UserDTO:
+async def user_get(pk: UserID, service: UserServiceDepends) -> UserDTO:
     return await service.get_user(user_id=pk)
 
 
@@ -40,12 +40,12 @@ async def user_get(pk: UserID, service: UserServiceDI) -> UserDTO:
     response_model=UserDTO,
     summary="Create User",
     responses={
-        HTTP_500_INTERNAL_SERVER_ERROR: {"model": HTTPExceptionModel},
-        HTTP_409_CONFLICT: {"model": UserAlreadyExistErrorDTO},
+        HTTP_500_INTERNAL_SERVER_ERROR: {"model": HTTPExceptionErrorDTO},
+        HTTP_409_CONFLICT: {"model": ObjectAlreadyExistErrorDTO(name="user")},
     },
     name="user_create",
 )
-async def user_create(data: UserCreateDTO, service: UserServiceDI) -> UserDTO:
+async def user_create(data: UserCreateDTO, service: UserServiceDepends) -> UserDTO:
     return await service.create_user(data=data)
 
 
@@ -54,12 +54,12 @@ async def user_create(data: UserCreateDTO, service: UserServiceDI) -> UserDTO:
     status_code=HTTP_204_NO_CONTENT,
     summary="Delete User",
     responses={
-        HTTP_404_NOT_FOUND: {"model": UserNotFoundErrorDTO},
-        HTTP_500_INTERNAL_SERVER_ERROR: {"model": HTTPExceptionModel},
+        HTTP_404_NOT_FOUND: {"model": ObjectNotFoundErrorDTO(name="user")},
+        HTTP_500_INTERNAL_SERVER_ERROR: {"model": HTTPExceptionErrorDTO},
     },
     name="user_delete",
 )
-async def user_delete(pk: UserID, service: UserServiceDI) -> None:
+async def user_delete(pk: UserID, service: UserServiceDepends) -> None:
     await service.delete_user(user_id=pk)
 
 
@@ -69,12 +69,12 @@ async def user_delete(pk: UserID, service: UserServiceDI) -> None:
     response_model=UserDTO,
     summary="Update User",
     responses={
-        HTTP_404_NOT_FOUND: {"model": UserNotFoundErrorDTO},
-        HTTP_500_INTERNAL_SERVER_ERROR: {"model": HTTPExceptionModel},
+        HTTP_404_NOT_FOUND: {"model": ObjectNotFoundErrorDTO(name="user")},
+        HTTP_500_INTERNAL_SERVER_ERROR: {"model": HTTPExceptionErrorDTO},
     },
     name="user_update",
 )
-async def user_update(pk: UserID, data: UserUpdateDTO, service: UserServiceDI) -> UserDTO:
+async def user_update(pk: UserID, data: UserUpdateDTO, service: UserServiceDepends) -> UserDTO:
     return await service.update_user(user_id=pk, data=data)
 
 
@@ -84,12 +84,12 @@ async def user_update(pk: UserID, data: UserUpdateDTO, service: UserServiceDI) -
     response_model=Paginator[UserDTO],
     summary="Get Users",
     responses={
-        HTTP_500_INTERNAL_SERVER_ERROR: {"model": HTTPExceptionModel},
+        HTTP_500_INTERNAL_SERVER_ERROR: {"model": HTTPExceptionErrorDTO},
     },
     name="user_get_list",
 )
 async def user_get_list(
-    service: UserServiceDI,
+    service: UserServiceDepends,
     page: PageQuery = 1,
     page_size: PageSizeQuery = 20,
 ) -> Paginator[UserDTO]:

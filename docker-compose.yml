@@ -41,3 +41,11 @@ services:
     depends_on:
       - postgres-master
       - pgbouncer-master
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - 6379:6379

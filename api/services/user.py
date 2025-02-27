@@ -9,11 +9,10 @@ from src.database.models import User
 from src.exceptions import ObjectAlreadyExistError, ObjectNotFoundError
 from src.services import UserService
 from src.types import UserCreateDTO, UserDTO, UserUpdateDTO
+from src.types.pagination import Pagination, Paginator
 
 
 __all__ = ["RESTUserService"]
-
-from src.types.pagination import Pagination, Paginator
 
 
 class RESTUserService:

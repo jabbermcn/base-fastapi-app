@@ -21,14 +21,10 @@ class BaseRepo(ABC, Generic[ModelType]):
         await self._session.refresh(obj)
         return obj
 
-    async def get(
-        self, _id: Any, options: list[Any] | None = None, filters: list[Any] | None = None
-    ) -> ModelType | None:
-        statement = select(self._model).filter(and_(self._model.id == _id))
+    async def get(self, filters: list[Any], options: list[Any] | None = None) -> ModelType | None:
+        statement = select(self._model).filter(*filters)
         if options:
             statement = statement.options(*options)
-        if filters:
-            statement = statement.filter(*filters)
 
         return await self._session.scalar(statement=statement)
 

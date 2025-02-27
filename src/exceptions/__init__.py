@@ -1,5 +1,6 @@
+from .auth import IncorrectPasswordError, TokenIsBannedError
 from .object_already_exist import ObjectAlreadyExistError
 from .object_not_found import ObjectNotFoundError
 
 
-__all__ = ["ObjectNotFoundError", "ObjectAlreadyExistError"]
+__all__ = ["ObjectNotFoundError", "ObjectAlreadyExistError", "IncorrectPasswordError", "TokenIsBannedError"]

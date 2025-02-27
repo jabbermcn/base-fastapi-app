@@ -5,7 +5,7 @@ __all__ = ["ObjectAlreadyExistError"]
 
 
 class ObjectAlreadyExistError(BaseError):
-    details = "{name}_already_exists"
+    detail = "{name}_already_exists"
 
     def __init__(self, name: str) -> None:
         if not isinstance(name, str):
@@ -14,4 +14,4 @@ class ObjectAlreadyExistError(BaseError):
         if not name:
             raise ValueError("Name cannot be empty")
 
-        self.details = self.details.format(name=name)
+        self.detail = self.detail.format(name=name)

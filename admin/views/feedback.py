@@ -18,7 +18,6 @@ class FeedbackAdminView(ModelView, model=Feedback):
     name_plural = "Отзывы"
     column_labels = {
         Feedback.id: "ID",
-        Feedback.user_id: "ID пользователя",
         Feedback.email: "Email",
         Feedback.name: "Название",
         Feedback.comment: "Комментарий",
@@ -28,7 +27,6 @@ class FeedbackAdminView(ModelView, model=Feedback):
     }
     column_list = [
         Feedback.id,
-        Feedback.user_id,
         Feedback.email,
         Feedback.name,
         Feedback.comment,
@@ -59,7 +57,7 @@ class FeedbackAdminView(ModelView, model=Feedback):
     async def activate_objects(self, request: Request):
         pks = request.query_params.get("pks", "").split(",")
         if pks:
-            statement = update(self.model).filter(self.model.id.in_(pks)).values(is_processed=True)
+            statement = update(self.model).filter(self.model.id.in_(pks)).values(is_processed=True)  # noqa
             async with self.session_maker(expire_on_commit=False) as session:
                 try:
                     await session.execute(statement=statement)
@@ -83,7 +81,7 @@ class FeedbackAdminView(ModelView, model=Feedback):
     async def deactivate_objects(self, request: Request):
         pks = request.query_params.get("pks", "").split(",")
         if pks:
-            statement = update(self.model).filter(self.model.id.in_(pks)).values(is_processed=False)
+            statement = update(self.model).filter(self.model.id.in_(pks)).values(is_processed=False)  # noqa
             async with self.session_maker(expire_on_commit=False) as session:
                 try:
                     await session.execute(statement=statement)

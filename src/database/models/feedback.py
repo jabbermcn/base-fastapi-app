@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from sqlalchemy import BOOLEAN, UUID, VARCHAR, Column, ForeignKey
+from sqlalchemy import BOOLEAN, UUID, VARCHAR, Column
 
 from src.database.mixins import LifecycleMixin
 from src.database.models.base import Base
@@ -17,8 +17,6 @@ class Feedback(Base, LifecycleMixin):
 
     :param id: Unique identifier for the feedback, represented as a UUID.
                Automatically generated for new rows.
-    :param user_id: The ID of the user who provided the feedback.
-                    Foreign key referencing the `id` column in the `User` model.
     :param email: The email address of the user providing the feedback.
     :param name: The name of the user providing the feedback.
     :param comment: The content of the feedback, with a maximum length of 500 characters.
@@ -33,13 +31,6 @@ class Feedback(Base, LifecycleMixin):
         UUID,
         insert_default=uuid4,
         primary_key=True,
-    )
-    user_id = Column(
-        UUID,
-        ForeignKey(column="user.id", ondelete="CASCADE", onupdate="CASCADE"),
-        index=True,
-        nullable=True,
-        unique=False,
     )
     email = Column(
         VARCHAR(length=254),

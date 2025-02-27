@@ -5,7 +5,7 @@ __all__ = ["ObjectNotFoundError"]
 
 
 class ObjectNotFoundError(BaseError):
-    details = "{name}_not_found"
+    detail = "{name}_not_found"
 
     def __init__(self, name: str) -> None:
         if not isinstance(name, str):
@@ -14,4 +14,4 @@ class ObjectNotFoundError(BaseError):
         if not name:
             raise ValueError("Name cannot be empty")
 
-        self.details = self.details.format(name=name)
+        self.detail = self.detail.format(name=name)

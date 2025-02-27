@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.responses import ORJSONResponse
@@ -16,6 +18,7 @@ from app.openapi import DESCRIPTION, TAGS_METADATA
 from settings import settings
 from src.database.connection import async_session_maker
 from src.middlewares import CleanPathMiddleware
+from src.utils.rate_limit import fastapi_limiter
 
 
 __all__ = ["get_application"]
@@ -71,8 +74,16 @@ def setup_middlewares(app: FastAPI) -> None:
     app.add_middleware(middleware_class=CleanPathMiddleware)  # noqa
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):  # noqa
+    await fastapi_limiter.setup(redis_url=settings.REDIS.DSN)
+    yield
+    await fastapi_limiter.close()
+
+
 def get_application() -> FastAPI:
     app = FastAPI(
+        lifespan=lifespan,
         title="APP title",
         version="0.0.1",
         description=DESCRIPTION,
@@ -87,6 +98,7 @@ def get_application() -> FastAPI:
             "email": "jabbermnc@gmail.com",
         },
     )
+
     include_routers(app=app)
     mount_applications(app=app)
     setup_middlewares(app=app)

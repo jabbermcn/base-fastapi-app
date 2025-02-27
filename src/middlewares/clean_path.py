@@ -16,6 +16,9 @@ class CleanPathMiddleware:
         self.app = app
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] == "lifespan" or not scope.get("path"):
+            await self.app(scope, receive, send)
+            return
         if scope["type"] in {"http", "websocket"}:
             url = URL(scope=scope)
             if self.REGEX_PATTERN.search(string=url.path):

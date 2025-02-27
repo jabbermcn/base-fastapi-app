@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 from sqlalchemy import UUID, VARCHAR, Column
+from sqlalchemy.orm import relationship
 
 from src.database.mixins import LifecycleMixin, SoftDeleteMixin
 from src.database.models.base import Base
@@ -18,6 +19,7 @@ class User(Base, LifecycleMixin, SoftDeleteMixin):
     :param id: Unique identifier for the user, represented as a UUID.
                The system automatically generates this value for new rows.
     :param email: Email address of the user. Must be unique.
+    :param password_hash: Password hash for the user's authentication.
     :param created_at: Timestamp that shows when the user was created.
                        The database sets this value when the user is first saved.
     :param updated_at: Timestamp that shows when the user was last updated.
@@ -38,6 +40,17 @@ class User(Base, LifecycleMixin, SoftDeleteMixin):
         nullable=False,
         unique=True,
     )
+    password_hash = Column(
+        VARCHAR(length=128),
+        nullable=True,
+    )
+
+    projects = relationship(
+        argument="Project",
+        back_populates="user",
+        uselist=True,
+        viewonly=True,
+    )
 
     def __str__(self) -> str:
-        return self.id
+        return self.email
