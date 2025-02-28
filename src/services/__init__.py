@@ -1,6 +1,5 @@
 from src.services.auth.auth import AuthService
+from src.services.project.project import ProjectService
 
-from .user import UserService
 
-
-__all__ = ["UserService", "AuthService"]
+__all__ = ["ProjectService", "AuthService"]

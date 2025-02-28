@@ -1,5 +1,5 @@
 from .auth import RESTAuthService
-from .user import RESTUserService
+from .project import RESTProjectService
 
 
-__all__ = ["RESTUserService", "RESTAuthService"]
+__all__ = ["RESTProjectService", "RESTAuthService"]

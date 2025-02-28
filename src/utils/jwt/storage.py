@@ -3,7 +3,7 @@ from datetime import timedelta
 from orjson import dumps, loads
 from redis.asyncio import Redis
 
-from settings import settings
+from src.config import async_redis_client
 from src.utils.jwt import IncorrectJWTBanPayloadError, JWTStorageUnavailableError
 
 
@@ -11,7 +11,7 @@ __all__ = ["JWTStorage"]
 
 
 class JWTStorage:
-    storage_backend: Redis = Redis.from_url(url=settings.REDIS.DSN.unicode_string())
+    storage_backend: Redis = async_redis_client
 
     @classmethod
     def generate_key(cls, key: str, prefix: str) -> str:

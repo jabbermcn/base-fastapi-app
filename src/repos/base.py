@@ -2,7 +2,7 @@ from abc import ABC
 from collections.abc import Sequence
 from typing import Any, Generic, TypeVar
 
-from sqlalchemy import and_, delete, func, select, update
+from sqlalchemy import and_, delete, func, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import DeclarativeBase
 
@@ -15,11 +15,10 @@ class BaseRepo(ABC, Generic[ModelType]):
         self._session = session
         self._model = model
 
-    async def create(self, obj: ModelType) -> ModelType:
-        self._session.add(obj)
+    async def create(self, obj: dict) -> ModelType:
+        result = await self._session.execute(statement=insert(self._model).values(**obj).returning(self._model))
         await self._session.commit()
-        await self._session.refresh(obj)
-        return obj
+        return result.scalar_one_or_none()
 
     async def get(self, filters: list[Any], options: list[Any] | None = None) -> ModelType | None:
         statement = select(self._model).filter(*filters)

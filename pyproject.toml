@@ -20,7 +20,7 @@ httptools = "^0.6.4"
 itsdangerous = "^2.2.0"
 orjson = "^3.10.15"
 bcrypt = "^4.2.1"
-redis = "^5.2.1"
+fastapi-cache2 = {extras = ["redis"], version = "^0.2.2"}
 
 
 [tool.poetry.group.dev.dependencies]

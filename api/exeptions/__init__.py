@@ -1,10 +1,11 @@
 from .auth import IncorrectPasswordException, TokenNotProvidedException
-from .base import ObjectAlreadyExistException, ObjectNotFoundException
+from .base import InternalServerException, ObjectExistsException, ObjectNotFoundException
 
 
 __all__ = [
     "TokenNotProvidedException",
-    "ObjectAlreadyExistException",
+    "ObjectExistsException",
     "ObjectNotFoundException",
+    "InternalServerException",
     "IncorrectPasswordException",
 ]

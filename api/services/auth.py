@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.exeptions import IncorrectPasswordException, ObjectAlreadyExistException, ObjectNotFoundException
+from api.exeptions import IncorrectPasswordException, ObjectExistsException, ObjectNotFoundException
 from src.exceptions import IncorrectPasswordError, ObjectAlreadyExistError, ObjectNotFoundError
 from src.services import AuthService
 from src.types import SignInRequestDTO, SignUpRequestDTO, TokenPairDTO
@@ -25,4 +25,4 @@ class RESTAuthService:
         try:
             await self._auth_service.sign_up(data=data)
         except ObjectAlreadyExistError:
-            raise ObjectAlreadyExistException(name="user")
+            raise ObjectExistsException(name="user")

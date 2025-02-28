@@ -4,11 +4,11 @@ from fastapi import Path
 from pydantic import UUID4
 
 
-UserID = Annotated[
+ProjectID = Annotated[
     UUID4,
     Path(
-        title="User ID",
-        description="<p>User unique identifier</p>",
+        title="Project ID",
+        description="<p>Project unique identifier</p>",
         alias="id",
     ),
 ]

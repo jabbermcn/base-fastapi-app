@@ -29,6 +29,6 @@ class AuthService:
         user_data["email"] = data.email.lower()
         user_data["password_hash"] = PasswordManager.hash(plain_password=data.password)
         try:
-            return await self.repo.create(obj=User(**user_data))
+            return await self.repo.create(obj=user_data)
         except IntegrityError:
             raise ObjectAlreadyExistError(name="user")

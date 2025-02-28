@@ -1,8 +1,11 @@
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.responses import ORJSONResponse
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
 from sqladmin import Admin
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.gzip import GZipMiddleware
@@ -16,6 +19,7 @@ from admin.views import FeedbackAdminView, UserAdminView
 from api import api
 from app.openapi import DESCRIPTION, TAGS_METADATA
 from settings import settings
+from src.config import async_redis_client
 from src.database.connection import async_session_maker
 from src.middlewares import CleanPathMiddleware
 from src.utils.rate_limit import fastapi_limiter
@@ -75,7 +79,8 @@ def setup_middlewares(app: FastAPI) -> None:
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):  # noqa
+async def lifespan(app: FastAPI) -> AsyncIterator:  # noqa
+    FastAPICache.init(RedisBackend(redis=async_redis_client), prefix="fastapi-cache")
     await fastapi_limiter.setup(redis_url=settings.REDIS.DSN)
     yield
     await fastapi_limiter.close()

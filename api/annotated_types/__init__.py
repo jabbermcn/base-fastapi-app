@@ -1,5 +1,5 @@
 from .base import PageQuery, PageSizeQuery
-from .user import UserID
+from .project import ProjectID
 
 
-__all__ = ["PageQuery", "PageSizeQuery", "UserID"]
+__all__ = ["PageQuery", "PageSizeQuery", "ProjectID"]
