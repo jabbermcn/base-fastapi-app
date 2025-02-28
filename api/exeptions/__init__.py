@@ -1,5 +1,5 @@
 from .auth import IncorrectPasswordException, TokenNotProvidedException
-from .base import InternalServerException, ObjectExistsException, ObjectNotFoundException
+from .base import FastAPICacheException, InternalServerException, ObjectExistsException, ObjectNotFoundException
 
 
 __all__ = [
@@ -8,4 +8,5 @@ __all__ = [
     "ObjectNotFoundException",
     "InternalServerException",
     "IncorrectPasswordException",
+    "FastAPICacheException",
 ]
