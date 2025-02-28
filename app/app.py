@@ -9,12 +9,14 @@ from fastapi_cache.backends.redis import RedisBackend
 from sqladmin import Admin
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.gzip import GZipMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from admin.authentication import AdminAuthenticationBackend
+from admin.google.handlers import router as google_router
 from admin.views import FeedbackAdminView, UserAdminView
 from api import api
 from app.openapi import DESCRIPTION, TAGS_METADATA
@@ -30,6 +32,7 @@ __all__ = ["get_application"]
 
 def include_routers(app: FastAPI) -> None:
     app.include_router(router=api)
+    app.include_router(router=google_router)
 
 
 def mount_applications(app: FastAPI) -> None:
@@ -76,6 +79,10 @@ def setup_middlewares(app: FastAPI) -> None:
         allow_credentials=True,
     )
     app.add_middleware(middleware_class=CleanPathMiddleware)  # noqa
+    app.add_middleware(
+        middleware_class=SessionMiddleware,  # noqa
+        secret_key=settings.ADMIN.SECRET_KEY.get_secret_value(),
+    )
 
 
 @asynccontextmanager

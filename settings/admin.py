@@ -10,3 +10,4 @@ class AdminSettings(BaseSettingsWithConfig, env_prefix="ADMIN_"):
     USERNAME: str
     PASSWORD: SecretStr
     SECRET_KEY: SecretStr
+    ALLOWED_EMAILS: list[str]

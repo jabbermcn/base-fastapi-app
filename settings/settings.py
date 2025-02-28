@@ -6,6 +6,7 @@ from pydantic import Field
 from settings._base import BaseSettingsWithConfig
 from settings.admin import AdminSettings
 from settings.database import DatabaseSettings
+from settings.google import GoogleSettings
 from settings.jwt import JWTSettings
 from settings.redis import RedisSettings
 from settings.server import ServerSettings
@@ -22,6 +23,7 @@ class Settings(BaseSettingsWithConfig):
     DATABASE: Annotated[DatabaseSettings, Field(default_factory=DatabaseSettings)]
     JWT: Annotated[JWTSettings, Field(default_factory=JWTSettings)]
     REDIS: Annotated[RedisSettings, Field(default_factory=RedisSettings)]
+    GOOGLE: Annotated[GoogleSettings, Field(default_factory=GoogleSettings)]
 
 
 settings = Settings()
