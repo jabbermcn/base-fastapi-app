@@ -13,7 +13,7 @@ class DTO(BaseModel):
     model_config = ConfigDict(
         model_title_generator=model_title_generator,
         str_strip_whitespace=True,
-        extra="ignore",
+        extra="forbid",
         populate_by_name=True,
         use_enum_values=True,
         from_attributes=True,

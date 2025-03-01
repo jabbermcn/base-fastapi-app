@@ -1,4 +1,4 @@
-from collections.abc import AsyncIterator
+from collections.abc import AsyncGenerator
 from typing import Annotated
 
 from fastapi import Depends
@@ -10,7 +10,7 @@ from src.database.connection import async_session_maker
 __all__ = ["DBSession"]
 
 
-async def _create_database_session() -> AsyncIterator[AsyncSession]:
+async def _create_database_session() -> AsyncGenerator:
     async with async_session_maker() as session:  # type: AsyncSession
         yield session
 

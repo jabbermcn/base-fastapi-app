@@ -5,7 +5,7 @@ router = APIRouter()
 
 
 @router.post(
-    path="/webhook/",
+    path="/",
 )
 async def webhook():
     return {"status": "ok"}

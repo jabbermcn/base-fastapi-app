@@ -1,5 +1,11 @@
 from .auth import IncorrectPasswordException, TokenNotProvidedException
-from .base import FastAPICacheException, InternalServerException, ObjectExistsException, ObjectNotFoundException
+from .base import (
+    FastAPICacheException,
+    InternalServerException,
+    ObjectExistsException,
+    ObjectNotFoundException,
+    ServiceResponseValidationException,
+)
 
 
 __all__ = [
@@ -9,4 +15,5 @@ __all__ = [
     "InternalServerException",
     "IncorrectPasswordException",
     "FastAPICacheException",
+    "ServiceResponseValidationException",
 ]
