@@ -1,11 +1,15 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
+import sentry_sdk
+
 from fastapi import FastAPI
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.responses import ORJSONResponse
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
+from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 from sqladmin import Admin
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.gzip import GZipMiddleware
@@ -36,6 +40,18 @@ def include_routers(app: FastAPI) -> None:
 
 def mount_applications(app: FastAPI) -> None:
     app.mount(path="/statics", app=StaticFiles(directory="statics"), name="statics")
+
+
+def setup_sentry(app: FastAPI) -> None:  # noqa
+    sentry_sdk.init(
+        dsn=settings.SENTRY.DSN,
+        integrations=[SqlalchemyIntegration()],
+        traces_sample_rate=1.0,
+        send_default_pii=True,
+        _experiments={
+            "continuous_profiling_auto_start": True,
+        },
+    )
 
 
 def setup_openapi(app: FastAPI) -> None:
@@ -82,6 +98,7 @@ def setup_middlewares(app: FastAPI) -> None:
         middleware_class=SessionMiddleware,  # noqa
         secret_key=settings.ADMIN.SECRET_KEY.get_secret_value(),
     )
+    app.add_middleware(middleware_class=SentryAsgiMiddleware)  # noqa
 
 
 @asynccontextmanager
@@ -115,6 +132,7 @@ def get_application() -> FastAPI:
     setup_middlewares(app=app)
     setup_docs(app=app)
     setup_openapi(app=app)
+    setup_sentry(app)
 
     admin = Admin(
         app=app,

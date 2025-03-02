@@ -21,6 +21,7 @@ itsdangerous = "^2.2.0"
 orjson = "^3.10.15"
 bcrypt = "^4.2.1"
 fastapi-cache2 = {extras = ["redis"], version = "^0.2.2"}
+sentry-sdk = {extras = ["fastapi"], version = "^2.22.0"}
 
 
 [tool.poetry.group.dev.dependencies]

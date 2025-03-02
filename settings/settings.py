@@ -9,6 +9,7 @@ from settings.database import DatabaseSettings
 from settings.google import GoogleSettings
 from settings.jwt import JWTSettings
 from settings.redis import RedisSettings
+from settings.sentry import SentrySettings
 from settings.server import ServerSettings
 
 
@@ -24,6 +25,7 @@ class Settings(BaseSettingsWithConfig):
     JWT: Annotated[JWTSettings, Field(default_factory=JWTSettings)]
     REDIS: Annotated[RedisSettings, Field(default_factory=RedisSettings)]
     GOOGLE: Annotated[GoogleSettings, Field(default_factory=GoogleSettings)]
+    SENTRY: Annotated[SentrySettings, Field(default_factory=SentrySettings)]
 
 
 settings = Settings()
