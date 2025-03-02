@@ -26,7 +26,6 @@ class FeedbackAdminView(ModelView, model=Feedback):
         Feedback.is_processed: "Обработан",
     }
     column_list = [
-        Feedback.id,
         Feedback.email,
         Feedback.name,
         Feedback.comment,
@@ -34,7 +33,6 @@ class FeedbackAdminView(ModelView, model=Feedback):
         Feedback.updated_at,
         Feedback.is_processed,
     ]
-    column_details_exclude_list = [Feedback.id]
     column_searchable_list = [Feedback.email, Feedback.name]
     column_sortable_list = [Feedback.created_at]
     column_default_sort = [(Feedback.created_at, True)]

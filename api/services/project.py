@@ -58,6 +58,7 @@ class RESTProjectService:
 
     @project_exception_handler()
     async def get_projects(self, user_id: UUID | str, page: int, page_size: int) -> Paginator[ProjectExtendedDTO]:
+        count = await self._project_service.count(user_id=user_id)
         return Paginator(
             results=[
                 ProjectExtendedDTO.model_validate(project)
@@ -66,6 +67,7 @@ class RESTProjectService:
             pagination=Pagination(
                 page_size=page_size,
                 page=page,
-                page_count=ceil(await self._project_service.count(user_id=user_id) / page_size),
+                page_count=ceil(count / page_size) if count > 0 else 1,
+                # TODO уточнить у frontend как что они хотят видеть в page_count (0 / 1) если нету записей
             ),
         )

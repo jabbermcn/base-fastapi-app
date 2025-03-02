@@ -17,12 +17,11 @@ from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from admin.authentication import AdminAuthenticationBackend
 from admin.google.handlers import router as google_router
-from admin.views import FeedbackAdminView, UserAdminView
+from admin.views import FeedbackAdminView, ProjectAdminView, UserAdminView
 from api import api
 from app.openapi import DESCRIPTION, TAGS_METADATA
 from settings import settings
-from src.config import async_redis_client
-from src.database.connection import async_session_maker
+from src.config import async_redis_client, db_connection
 from src.middlewares import CleanPathMiddleware
 from src.utils.rate_limit import fastapi_limiter
 
@@ -119,11 +118,12 @@ def get_application() -> FastAPI:
 
     admin = Admin(
         app=app,
-        session_maker=async_session_maker,
+        session_maker=db_connection.session_maker,
         favicon_url=app.url_path_for("statics", path="icon.svg"),
         logo_url=app.url_path_for("statics", path="logo.svg"),
         authentication_backend=AdminAuthenticationBackend(secret_key=settings.ADMIN.SECRET_KEY.get_secret_value()),
     )
     admin.add_model_view(view=UserAdminView)
     admin.add_model_view(view=FeedbackAdminView)
+    admin.add_model_view(view=ProjectAdminView)
     return app
