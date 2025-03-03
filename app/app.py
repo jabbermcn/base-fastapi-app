@@ -1,104 +1,27 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-import sentry_sdk
-
 from fastapi import FastAPI
-from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.responses import ORJSONResponse
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
-from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 from sqladmin import Admin
-from starlette.middleware.cors import CORSMiddleware
-from starlette.middleware.gzip import GZipMiddleware
-from starlette.middleware.sessions import SessionMiddleware
-from starlette.middleware.trustedhost import TrustedHostMiddleware
-from starlette.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
-from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from admin.authentication import AdminAuthenticationBackend
-from admin.google.handlers import router as google_router
 from admin.views import FeedbackAdminView, ProjectAdminView, UserAdminView
-from api import api
+from app import include_routers, setup_docs, setup_metrics, setup_middlewares, setup_openapi, setup_sentry
 from app.openapi import DESCRIPTION, TAGS_METADATA
 from settings import settings
 from src.config import async_redis_client, db_connection
-from src.middlewares import CleanPathMiddleware
 from src.utils.rate_limit import fastapi_limiter
 
 
 __all__ = ["get_application"]
 
 
-def include_routers(app: FastAPI) -> None:
-    app.include_router(router=api)
-    app.include_router(router=google_router)
-
-
 def mount_applications(app: FastAPI) -> None:
     app.mount(path="/statics", app=StaticFiles(directory="statics"), name="statics")
-
-
-def setup_sentry(app: FastAPI) -> None:  # noqa
-    sentry_sdk.init(
-        dsn=settings.SENTRY.DSN,
-        integrations=[SqlalchemyIntegration()],
-        traces_sample_rate=1.0,
-        send_default_pii=True,
-        _experiments={
-            "continuous_profiling_auto_start": True,
-        },
-    )
-
-
-def setup_openapi(app: FastAPI) -> None:
-    app.openapi()
-    app.openapi_schema["info"]["x-logo"] = {"url": app.url_path_for("statics", path="logo.svg")}
-
-
-def setup_docs(app: FastAPI) -> None:
-    @app.get(path="/docs", include_in_schema=False)
-    async def swagger_ui_html() -> HTMLResponse:
-        return get_swagger_ui_html(
-            openapi_url=app.openapi_url,  # noqa
-            title=app.title,  # noqa
-            swagger_favicon_url=app.url_path_for("statics", path="icon.svg"),
-            swagger_ui_parameters={
-                "showExtensions": False,
-                "filter": True,
-            },
-        )
-
-    @app.get(path="/redoc", include_in_schema=False)
-    async def redoc_ui_html() -> HTMLResponse:
-        return get_redoc_html(
-            openapi_url=app.openapi_url,  # noqa
-            title=app.title,  # noqa
-            redoc_favicon_url=app.url_path_for("statics", path="icon.svg"),
-            redoc_js_url="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js",
-        )
-
-
-def setup_middlewares(app: FastAPI) -> None:
-    app.add_middleware(middleware_class=ProxyHeadersMiddleware, trusted_hosts=["*"])  # noqa
-    app.add_middleware(middleware_class=GZipMiddleware)  # noqa
-    app.add_middleware(middleware_class=TrustedHostMiddleware, allowed_hosts=("*",))  # noqa
-    app.add_middleware(
-        middleware_class=CORSMiddleware,  # noqa
-        allow_origins=("*",),
-        allow_methods=("*",),
-        allow_headers=("*",),
-        allow_credentials=True,
-    )
-    app.add_middleware(middleware_class=CleanPathMiddleware)  # noqa
-    app.add_middleware(
-        middleware_class=SessionMiddleware,  # noqa
-        secret_key=settings.ADMIN.SECRET_KEY.get_secret_value(),
-    )
-    app.add_middleware(middleware_class=SentryAsgiMiddleware)  # noqa
 
 
 @asynccontextmanager
@@ -133,6 +56,7 @@ def get_application() -> FastAPI:
     setup_docs(app=app)
     setup_openapi(app=app)
     setup_sentry(app)
+    setup_metrics(app)
 
     admin = Admin(
         app=app,
