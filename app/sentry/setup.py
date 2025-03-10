@@ -6,6 +6,9 @@ from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 from settings import settings
 
 
+__all__ = ["setup_sentry"]
+
+
 def setup_sentry(app: FastAPI) -> None:  # noqa
     sentry_sdk.init(
         dsn=settings.SENTRY.DSN,
