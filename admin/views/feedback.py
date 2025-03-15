@@ -5,7 +5,7 @@ from sqladmin import ModelView, action
 from sqlalchemy import update
 from sqlalchemy.exc import IntegrityError
 
-from src.database.models import Feedback
+from src.database.alchemy.models import Feedback
 
 
 __all__ = ["FeedbackAdminView"]

@@ -1,6 +1,6 @@
 from sqladmin import ModelView
 
-from src.database.models import Project
+from src.database.alchemy.models import Project
 
 
 __all__ = ["ProjectAdminView"]

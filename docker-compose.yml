@@ -42,6 +42,7 @@ services:
     depends_on:
       - postgres-master
       - pgbouncer-master
+      - mongodb
 
   redis:
     image: redis:7-alpine
@@ -69,3 +70,13 @@ services:
       - ./grafana-data:/var/lib/grafana
     depends_on:
       - prometheus
+
+  mongodb:
+    image: mongo:6
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo-data:/data/db

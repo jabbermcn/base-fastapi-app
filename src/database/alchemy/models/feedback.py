@@ -2,8 +2,8 @@ from uuid import uuid4
 
 from sqlalchemy import BOOLEAN, UUID, VARCHAR, Column
 
-from src.database.mixins import LifecycleMixin
-from src.database.models.base import Base
+from src.database.alchemy.mixins import LifecycleMixin
+from src.database.alchemy.models.base import Base
 
 
 __all__ = ["Feedback"]

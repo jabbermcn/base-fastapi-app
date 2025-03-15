@@ -1,7 +1,7 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database.models import User
+from src.database.alchemy.models import User
 from src.exceptions import IncorrectPasswordError, ObjectAlreadyExistError, ObjectNotFoundError
 from src.repos import UserRepo
 from src.types import SignInRequestDTO, SignUpRequestDTO, TokenPairDTO

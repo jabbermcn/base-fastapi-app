@@ -3,8 +3,8 @@ from uuid import uuid4
 from sqlalchemy import UUID, VARCHAR, CheckConstraint, Column, Enum, ForeignKey
 from sqlalchemy.orm import relationship
 
-from src.database.mixins import LifecycleMixin
-from src.database.models.base import Base
+from src.database.alchemy.mixins import LifecycleMixin
+from src.database.alchemy.models.base import Base
 from src.enums import ProjectType
 
 

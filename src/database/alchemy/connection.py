@@ -6,7 +6,7 @@ from sqlalchemy import URL, NullPool
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 
-class DatabaseConnection:
+class AlchemyDBConnection:
     def __init__(self, dsn: MultiHostUrl | URL | str):
         self._dsn = dsn
         self.engine = create_async_engine(

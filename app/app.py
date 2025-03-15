@@ -13,7 +13,7 @@ from admin.views import FeedbackAdminView, ProjectAdminView, UserAdminView
 from app import include_routers, setup_docs, setup_metrics, setup_middlewares, setup_openapi, setup_sentry
 from app.openapi import DESCRIPTION, TAGS_METADATA
 from settings import settings
-from src.config import async_redis_client, db_connection
+from src.config import alchemy_db_connection, async_redis_client
 from src.utils.rate_limit import fastapi_limiter
 
 
@@ -27,7 +27,7 @@ def mount_applications(app: FastAPI) -> None:
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator:  # noqa
     FastAPICache.init(RedisBackend(redis=async_redis_client), prefix="fastapi-cache")
-    await fastapi_limiter.setup(redis_url=settings.REDIS.DSN)
+    await fastapi_limiter.setup(redis_url=settings.REDIS.POSTGRES_DSN)
     yield
     await fastapi_limiter.close()
 
@@ -60,7 +60,7 @@ def get_application() -> FastAPI:
 
     admin = Admin(
         app=app,
-        session_maker=db_connection.session_maker,
+        session_maker=alchemy_db_connection.session_maker,
         favicon_url=app.url_path_for("statics", path="icon.svg"),
         logo_url=app.url_path_for("statics", path="logo.svg"),
         authentication_backend=AdminAuthenticationBackend(secret_key=settings.ADMIN.SECRET_KEY.get_secret_value()),

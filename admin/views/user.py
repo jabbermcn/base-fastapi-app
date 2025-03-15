@@ -1,6 +1,6 @@
 from sqladmin import ModelView
 
-from src.database.models.user import User
+from src.database.alchemy.models import User
 
 
 __all__ = ["UserAdminView"]

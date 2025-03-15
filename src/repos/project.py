@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database.models import Project
+from src.database.alchemy.models import Project
 from src.repos.base import BaseRepo
 
 

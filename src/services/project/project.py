@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
-from src.database.models import Project
+from src.database.alchemy.models import Project
 from src.exceptions import FastAPICacheError, InternalServerError, ObjectNotFoundError
 from src.repos import ProjectRepo
 from src.types import ProjectCreateRequestDTO, ProjectUpdateRequestDTO

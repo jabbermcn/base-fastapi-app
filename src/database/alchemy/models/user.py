@@ -3,8 +3,8 @@ from uuid import uuid4
 from sqlalchemy import UUID, VARCHAR, Column
 from sqlalchemy.orm import relationship
 
-from src.database.mixins import LifecycleMixin, SoftDeleteMixin
-from src.database.models.base import Base
+from src.database.alchemy.mixins import LifecycleMixin, SoftDeleteMixin
+from src.database.alchemy.models.base import Base
 
 
 __all__ = ["User"]
