@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from src.database.models import Project
-from src.exceptions import FastAPICacheError, ObjectNotFoundError, ProjectInternalServerError
+from src.exceptions import FastAPICacheError, InternalServerError, ObjectNotFoundError
 from src.repos import ProjectRepo
 from src.types import ProjectCreateRequestDTO, ProjectUpdateRequestDTO
 
@@ -35,7 +35,7 @@ class ProjectService:
             await FastAPICache.clear(namespace="project")
             return await self.repo.create(obj=project_data)
         except IntegrityError:
-            raise ProjectInternalServerError()
+            raise InternalServerError(name="project")
         except Exception:
             raise FastAPICacheError(name="project")
 

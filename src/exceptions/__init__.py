@@ -1,13 +1,12 @@
 from .auth import IncorrectPasswordError, TokenIsBannedError
-from .base import FastAPICacheError, ObjectAlreadyExistError, ObjectNotFoundError
-from .project import ProjectInternalServerError
+from .base import FastAPICacheError, InternalServerError, ObjectAlreadyExistError, ObjectNotFoundError
 
 
 __all__ = [
     "ObjectNotFoundError",
     "ObjectAlreadyExistError",
+    "InternalServerError",
     "IncorrectPasswordError",
     "TokenIsBannedError",
-    "ProjectInternalServerError",
     "FastAPICacheError",
 ]
