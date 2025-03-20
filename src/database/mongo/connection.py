@@ -7,7 +7,7 @@ class MongoDBConnection:
     def __init__(self, dsn: str, database_name: str):
         self._dsn = dsn
         self._database_name = database_name
-        self._client = AsyncIOMotorClient(self._dsn)
+        self._client = AsyncIOMotorClient(self._dsn, uuidRepresentation="standard")
         self._db = self._client[self._database_name]
 
     @property

@@ -1,6 +1,7 @@
-from collections.abc import AsyncIterator
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
+from beanie import init_beanie
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from fastapi_cache import FastAPICache
@@ -14,6 +15,8 @@ from app import include_routers, setup_docs, setup_metrics, setup_middlewares, s
 from app.openapi import DESCRIPTION, TAGS_METADATA
 from settings import settings
 from src.config import alchemy_db_connection, async_redis_client
+from src.config.database import mongo_db_connection
+from src.database.mongo.models import Record, User
 from src.utils.rate_limit import fastapi_limiter
 
 
@@ -25,11 +28,16 @@ def mount_applications(app: FastAPI) -> None:
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncIterator:  # noqa
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:  # noqa
     FastAPICache.init(RedisBackend(redis=async_redis_client), prefix="fastapi-cache")
-    await fastapi_limiter.setup(redis_url=settings.REDIS.POSTGRES_DSN)
+    await fastapi_limiter.setup(redis_url=settings.REDIS.DSN)
+    await init_beanie(
+        database=mongo_db_connection.database,
+        document_models=[Record, User],
+    )
     yield
     await fastapi_limiter.close()
+    await mongo_db_connection.close()
 
 
 def get_application() -> FastAPI:

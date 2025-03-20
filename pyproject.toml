@@ -26,6 +26,7 @@ opentelemetry-instrumentation-fastapi = "^0.51b0"
 prometheus-client = "^0.21.1"
 opentelemetry-exporter-prometheus = "^0.51b0"
 motor = "^3.7.0"
+beanie = "^1.29.0"
 
 
 [tool.poetry.group.dev.dependencies]

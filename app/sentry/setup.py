@@ -11,7 +11,7 @@ __all__ = ["setup_sentry"]
 
 def setup_sentry(app: FastAPI) -> None:  # noqa
     sentry_sdk.init(
-        dsn=settings.SENTRY.POSTGRES_DSN,
+        dsn=settings.SENTRY.DSN,
         integrations=[SqlalchemyIntegration()],
         traces_sample_rate=1.0,
         send_default_pii=True,

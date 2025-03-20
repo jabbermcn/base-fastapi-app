@@ -8,5 +8,4 @@ from src.config import alchemy_db_connection
 
 __all__ = ["DBSession"]
 
-
 DBSession = Annotated[AsyncSession, Depends(dependency=alchemy_db_connection.get_session)]

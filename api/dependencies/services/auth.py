@@ -4,9 +4,10 @@ from fastapi import Depends, Security
 from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
 
 from api.dependencies.database_session import DBSession
-from api.exeptions import TokenNotProvidedException
+from api.exeptions import InvalidTokenOrExpiredException, TokenNotProvidedException
 from api.services import RESTAuthService
 from src.types import TokenPayload
+from src.utils.jwt import DecodeError
 from src.utils.jwt.manager import JWTManager
 
 
@@ -25,7 +26,10 @@ HTTPAuthorizationCredentialsDepends = Annotated[HTTPAuthorizationCredentials, Se
 
 
 async def _get_token_payload(credentials: HTTPAuthorizationCredentialsDepends) -> TokenPayload:
-    return await JWTManager.decode_access_token(token=credentials.credentials)
+    try:
+        return await JWTManager.decode_access_token(token=credentials.credentials)
+    except DecodeError:
+        raise InvalidTokenOrExpiredException()
 
 
 TokenPayloadDepends = Annotated[TokenPayload, Depends(dependency=_get_token_payload)]

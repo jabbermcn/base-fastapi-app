@@ -1,4 +1,4 @@
-from .auth import IncorrectPasswordException, TokenNotProvidedException
+from .auth import IncorrectPasswordException, InvalidTokenOrExpiredException, TokenNotProvidedException
 from .base import (
     FastAPICacheException,
     InternalServerException,
@@ -10,6 +10,7 @@ from .base import (
 
 __all__ = [
     "TokenNotProvidedException",
+    "InvalidTokenOrExpiredException",
     "ObjectExistsException",
     "ObjectNotFoundException",
     "InternalServerException",
